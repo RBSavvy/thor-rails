@@ -12,6 +12,7 @@ class Thor
 
     module ClassMethods
       def start(*args)
+        define_environment(args)
         load_environment
         start_original(*args)
       end
@@ -19,8 +20,12 @@ class Thor
       private
 
       def load_environment
-        ENV['RAILS_ENV'] ||= 'development'
         require File.expand_path('config/environment.rb')
+      end
+
+      def define_environment(args)
+        index = args.first.index { |option| option == '-e' }
+        ENV['RAILS_ENV'] ||= index ? args.first[index+1] : 'development'
       end
     end
   end
